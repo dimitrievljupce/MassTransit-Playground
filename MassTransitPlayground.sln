@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producer", "Producer\Producer.csproj", "{9896D4B0-534B-494F-96AA-9FC2EAF42394}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{243E7B0D-7BAC-4386-94B6-850D548B55E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{3BC5FA4C-A7E5-444F-A053-BD8153408C85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0399E7F6-0812-45FC-B610-C6D1700971EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9896D4B0-534B-494F-96AA-9FC2EAF42394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9896D4B0-534B-494F-96AA-9FC2EAF42394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9896D4B0-534B-494F-96AA-9FC2EAF42394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9896D4B0-534B-494F-96AA-9FC2EAF42394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{243E7B0D-7BAC-4386-94B6-850D548B55E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{243E7B0D-7BAC-4386-94B6-850D548B55E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{243E7B0D-7BAC-4386-94B6-850D548B55E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{243E7B0D-7BAC-4386-94B6-850D548B55E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC5FA4C-A7E5-444F-A053-BD8153408C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BC5FA4C-A7E5-444F-A053-BD8153408C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BC5FA4C-A7E5-444F-A053-BD8153408C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BC5FA4C-A7E5-444F-A053-BD8153408C85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{243E7B0D-7BAC-4386-94B6-850D548B55E5} = {0399E7F6-0812-45FC-B610-C6D1700971EF}
+		{3BC5FA4C-A7E5-444F-A053-BD8153408C85} = {0399E7F6-0812-45FC-B610-C6D1700971EF}
+		{9896D4B0-534B-494F-96AA-9FC2EAF42394} = {0399E7F6-0812-45FC-B610-C6D1700971EF}
+	EndGlobalSection
+EndGlobal

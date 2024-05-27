@@ -1,0 +1,12 @@
+version: "3"
+services:
+  masstransit-mq:
+    image: rabbitmq:management
+    container_name: MassTransit.RabbitMq
+    hostname: masstransit-mq
+    volumes:
+      - ./containers/queue/data/:/var/lib/rabbitmq
+      - ./containers/queue/log/:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
