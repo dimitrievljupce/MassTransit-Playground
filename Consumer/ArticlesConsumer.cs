@@ -10,7 +10,7 @@ public sealed class ArticlesConsumer(ILogger<ArticlesConsumer> logger) : IConsum
     {
         var message =
             $"Consuming ArticleCreatedEvent {DateTime.UtcNow}, published on {context.Message.CreatedOn}";
-        logger.LogInformation(message!);
+        logger.LogInformation(message);
         return Task.CompletedTask;
     }
 }
