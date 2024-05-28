@@ -6,7 +6,7 @@ services:
     hostname: masstransit-mq
     ports:
       - "5672:5672"
-      - "15672:15672" # Ensure this line is present
+      - "15672:15672"
     volumes:
       - ./.containers/queue/data/:/var/lib/rabbitmq
       - ./.containers/queue/log/:/var/log/rabbitmq
