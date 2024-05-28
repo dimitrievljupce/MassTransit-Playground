@@ -1,4 +1,4 @@
-namespace Producer;
+namespace Producer.Interfaces;
 
 public interface IArticlesAdapter
 {

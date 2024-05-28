@@ -4,9 +4,12 @@ services:
     image: rabbitmq:management
     container_name: MassTransit.RabbitMq
     hostname: masstransit-mq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Ensure this line is present
     volumes:
-      - ./containers/queue/data/:/var/lib/rabbitmq
-      - ./containers/queue/log/:/var/log/rabbitmq
+      - ./.containers/queue/data/:/var/lib/rabbitmq
+      - ./.containers/queue/log/:/var/log/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest

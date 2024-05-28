@@ -2,12 +2,21 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Producer;
+using Producer.Implementation;
+using Producer.Interfaces;
 
-var host = Host.CreateDefaultBuilder(args)
+var producerHost = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((_, config) =>
     {
         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
+    .ConfigureLogging((context, logging) =>
+    {
+        logging.AddConfiguration(context.Configuration.GetSection("Logging"));
+        logging.AddConsole();
+        logging.AddDebug();
     })
     .ConfigureServices((hostContext, services) =>
     {
@@ -31,5 +40,5 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IArticlesAdapter, ArticlesAdapter>();
     }).Build();
 
-// await host.Services.GetRequiredService<IArticlesAdapter>().ProduceArticles();
-await host.RunAsync();
+await producerHost.Services.GetRequiredService<IArticlesAdapter>().ProduceArticles();
+await producerHost.RunAsync();
