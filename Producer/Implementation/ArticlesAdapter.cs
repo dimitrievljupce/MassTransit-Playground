@@ -7,7 +7,7 @@ namespace Producer.Implementation;
 
 public class ArticlesAdapter(IPublishEndpoint publishEndpoint, ILogger<IArticlesAdapter> logger) : IArticlesAdapter
 {
-    private int _numberOfArticlesToProduce = 10;
+    private int _numberOfArticlesToProduce = 50;
 
     public async Task ProduceArticles()
     {

@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /App
+
+COPY ./Producer/Producer.csproj ./Producer/
+COPY ./Contracts/Contracts.csproj ./Contracts/
+RUN dotnet restore ./Producer/Producer.csproj
+
+COPY ./Producer ./Producer
+COPY ./Contracts ./Contracts/
+
+WORKDIR /App/Producer
+RUN dotnet publish -c Release -o out
+
+RUN ls out
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /App
+COPY --from=build-env /App/Producer/out .
+
+ENTRYPOINT ["dotnet", "Producer.dll"]

@@ -13,3 +13,24 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  masstransit-producer:
+    image: masstransit-producer
+    container_name: MassTransit.Producer
+    depends_on:
+      masstransit-mq:
+        condition: service_healthy
+    command: sh -c "sleep 30 && dotnet Producer.dll"
+
+  masstransit-consumer:
+    image: masstransit-consumer
+    container_name: MassTransit.Consumer
+    depends_on:
+      masstransit-mq:
+        condition: service_healthy
+    command: sh -c "sleep 30 && dotnet Consumer.dll"
