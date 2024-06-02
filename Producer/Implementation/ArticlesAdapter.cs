@@ -2,6 +2,7 @@ using Contracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Producer.Interfaces;
+using Serilog;
 
 namespace Producer.Implementation;
 
@@ -13,8 +14,7 @@ public class ArticlesAdapter(IPublishEndpoint publishEndpoint, ILogger<IArticles
     {
         while (_numberOfArticlesToProduce >= 0)
         {
-            logger.LogInformation("Publishing ArticleCreatedEvent {publishedOn}", DateTime.UtcNow);
-            
+            Log.Information("Publishing ArticleCreatedEvent {publishedOn}", DateTime.UtcNow);
             await publishEndpoint.Publish(new ArticleCreatedEvent
             {
                 Id = Guid.NewGuid(),
