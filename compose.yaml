@@ -18,52 +18,31 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
-
-  # masstransit-producer:
-  #   image: masstransit-producer
-  #   container_name: MassTransit.Producer
-  #   depends_on:
-  #     masstransit-mq:
-  #       condition: service_healthy
-  #   command: sh -c "sleep 30 && dotnet Producer.dll"
-
-  # masstransit-consumer:
-  #   image: masstransit-consumer
-  #   container_name: MassTransit.Consumer
-  #   depends_on:
-  #     masstransit-mq:
-  #       condition: service_healthy
-  #   command: sh -c "sleep 30 && dotnet Consumer.dll"
-
-  elasticsearch:
-    container_name: elastic-search
-    image: elasticsearch:8.13.4
-    ports:
-      - 9200:9200
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    environment:
-      - xpack.security.enabled=false
-      - xpack.watcher.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.type=single-node
     networks:
-      - elastic
+      - elastic-articles
 
-  kibana:
-    container_name: kibana
-    image: kibana:8.13.4
-    ports:
-      - 5601:5601
+  masstransit-producer:
+    image: masstransit-producer
+    container_name: MassTransit.Producer
     depends_on:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
+      masstransit-mq:
+        condition: service_healthy
+    command: sh -c "sleep 30 && dotnet Producer.dll"
     networks:
-      - elastic
+      - elastic-articles
+
+  masstransit-consumer:
+    image: masstransit-consumer
+    container_name: MassTransit.Consumer
+    depends_on:
+      masstransit-mq:
+        condition: service_healthy
+    command: sh -c "sleep 30 && dotnet Consumer.dll"
+    networks:
+      - elastic-articles
 
 networks:
-  elastic:
-    driver: bridge
+  elastic-articles:
+    external: true
 volumes:
   elasticsearch-data:

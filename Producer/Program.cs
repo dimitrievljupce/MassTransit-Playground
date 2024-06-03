@@ -25,7 +25,7 @@ var producerHost = Host.CreateDefaultBuilder(args)
             .WriteTo.Elasticsearch(
                 new[] { new Uri(context.Configuration.GetSection("ElasticConfiguration:Uri").Value!) }, opts =>
                 {
-                    opts.DataStream = new DataStreamName("producer", "producer-dataset", "producer");
+                    opts.DataStream = new DataStreamName("producer", "articles", "df");
                     opts.BootstrapMethod = BootstrapMethod.Failure;
                     opts.ConfigureChannel = channelOpts => { channelOpts.BufferOptions = new BufferOptions(); };
                 })
