@@ -1,5 +1,4 @@
 ﻿using Elastic.Channels;
-using Elastic.CommonSchema.Serilog;
 using Elastic.Ingest.Elasticsearch;
 using Elastic.Ingest.Elasticsearch.DataStreams;
 using Elastic.Serilog.Sinks;
@@ -7,7 +6,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Producer.Implementation;  
+using Producer.Implementation;
 using Producer.Interfaces;
 using Serilog;
 
@@ -23,12 +22,13 @@ var producerHost = Host.CreateDefaultBuilder(args)
             .Enrich.WithMachineName()
             .WriteTo.Debug()
             .WriteTo.Console()
-            .WriteTo.Elasticsearch(new[] { new Uri("http://localhost:9200") }, opts =>
-            {
-                opts.DataStream = new DataStreamName("producer", "console-example", "demo");
-                opts.BootstrapMethod = BootstrapMethod.Failure;
-                opts.ConfigureChannel = channelOpts => { channelOpts.BufferOptions = new BufferOptions(); };
-            })
+            .WriteTo.Elasticsearch(
+                new[] { new Uri(context.Configuration.GetSection("ElasticConfiguration:Uri").Value!) }, opts =>
+                {
+                    opts.DataStream = new DataStreamName("producer", "producer-dataset", "producer");
+                    opts.BootstrapMethod = BootstrapMethod.Failure;
+                    opts.ConfigureChannel = channelOpts => { channelOpts.BufferOptions = new BufferOptions(); };
+                })
             .ReadFrom.Configuration(context.Configuration.GetSection("Serilog"))
             .CreateLogger();
     })
@@ -58,4 +58,3 @@ Log.Information("Producer initiated. Start timestamp: {startingOn}", DateTime.Ut
 await producerHost.Services.GetRequiredService<IArticlesAdapter>().ProduceArticles();
 await producerHost.RunAsync();
 Log.Information("Producer shutdown complete. Timestamp: {downDate}", DateTime.UtcNow);
-
