@@ -12,11 +12,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Elastic.Serilog.Sinks" Version="8.6.0" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.2" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+      <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+      <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
     </ItemGroup>
 
     <ItemGroup>

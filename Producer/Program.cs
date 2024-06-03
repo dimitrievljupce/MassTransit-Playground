@@ -1,21 +1,36 @@
-﻿using MassTransit;
+﻿using Elastic.Channels;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Producer.Implementation;
 using Producer.Interfaces;
+using Serilog;
 
 var producerHost = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((_, config) =>
     {
         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
     })
-    .ConfigureLogging((context, logging) =>
+    .ConfigureLogging((context, _) =>
     {
-        logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-        logging.AddConsole();
-        logging.AddDebug();
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Debug()
+            .WriteTo.Console()
+            .WriteTo.Elasticsearch(
+                new[] { new Uri(context.Configuration.GetSection("ElasticConfiguration:Uri").Value!) }, opts =>
+                {
+                    opts.DataStream = new DataStreamName("producer", "articles", "df");
+                    opts.BootstrapMethod = BootstrapMethod.Failure;
+                    opts.ConfigureChannel = channelOpts => { channelOpts.BufferOptions = new BufferOptions(); };
+                })
+            .ReadFrom.Configuration(context.Configuration.GetSection("Serilog"))
+            .CreateLogger();
     })
     .ConfigureServices((hostContext, services) =>
     {
@@ -39,5 +54,7 @@ var producerHost = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IArticlesAdapter, ArticlesAdapter>();
     }).Build();
 
+Log.Information("Producer initiated. Start timestamp: {startingOn}", DateTime.UtcNow);
 await producerHost.Services.GetRequiredService<IArticlesAdapter>().ProduceArticles();
 await producerHost.RunAsync();
+Log.Information("Producer shutdown complete. Timestamp: {downDate}", DateTime.UtcNow);

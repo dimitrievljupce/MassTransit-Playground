@@ -2,18 +2,33 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Elastic.Channels;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
 
 var consumerHost = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((_, config) =>
     {
         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
     })
-    .ConfigureLogging((context, logging) =>
+    .ConfigureLogging((context, _) =>
     {
-        logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-        logging.AddConsole();
-        logging.AddDebug();
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .WriteTo.Debug()
+            .WriteTo.Console()
+            .WriteTo.Elasticsearch(
+                new[] { new Uri(context.Configuration.GetSection("ElasticConfiguration:Uri").Value!) }, opts =>
+                {
+                    opts.DataStream = new DataStreamName("consumer", "articles", "df");
+                    opts.BootstrapMethod = BootstrapMethod.Failure;
+                    opts.ConfigureChannel = channelOpts => { channelOpts.BufferOptions = new BufferOptions(); };
+                })
+            .ReadFrom.Configuration(context.Configuration.GetSection("Serilog"))
+            .CreateLogger();
     })
     .ConfigureServices((hostContext, services) =>
     {
@@ -36,4 +51,6 @@ var consumerHost = Host.CreateDefaultBuilder(args)
         });
     }).Build();
 
+Log.Information("Consumer initiated. Start timestamp: {startingOn}", DateTime.UtcNow);
 await consumerHost.RunAsync();
+Log.Information("Consumer shutdown complete. Timestamp: {downDate}", DateTime.UtcNow);

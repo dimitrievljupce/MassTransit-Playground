@@ -18,6 +18,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
+    networks:
+      - elastic-articles
 
   masstransit-producer:
     image: masstransit-producer
@@ -26,6 +28,8 @@ services:
       masstransit-mq:
         condition: service_healthy
     command: sh -c "sleep 30 && dotnet Producer.dll"
+    networks:
+      - elastic-articles
 
   masstransit-consumer:
     image: masstransit-consumer
@@ -34,3 +38,11 @@ services:
       masstransit-mq:
         condition: service_healthy
     command: sh -c "sleep 30 && dotnet Consumer.dll"
+    networks:
+      - elastic-articles
+
+networks:
+  elastic-articles:
+    external: true
+volumes:
+  elasticsearch-data:
